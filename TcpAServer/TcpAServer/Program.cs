@@ -26,6 +26,7 @@ namespace TcpAServer
             private TcpListener server;
             private bool isRunning;
             private Resource resource = new Resource();
+            private int numberOfClients;
 
 
             public TcpServer(int port)
@@ -50,6 +51,7 @@ namespace TcpAServer
 
                     Thread thread = new Thread(new ParameterizedThreadStart(HandleClient));
                     thread.Start(newClient);
+                    
                 }
             }
             public void HandleClient(object obj)
@@ -62,12 +64,17 @@ namespace TcpAServer
                 bool ClientConnected = true;
                 string data = null;
 
+                numberOfClients++;
+                Console.WriteLine("Current number of clients connected: {0}", numberOfClients);
+                
+
                 while (ClientConnected)
                 {
                     data = reader.ReadLine();
 
+                    Console.WriteLine("Message recieved from client: {0}", data);
                     writer.WriteLine("Number of A's so far: {0}", resource.AddToCount(data));
-                    Console.WriteLine("Number of A's so far: {0}", resource.count);
+                    Console.WriteLine("Number of A's so far: {0}", resource.currentCount);
                 }
             }
 
@@ -75,13 +82,17 @@ namespace TcpAServer
         
         public class Resource
         {
-            public int count;
+            private int count;
 
             public int AddToCount(string userInput)
             {
                 foreach (char c in userInput)
                     if (c == 'a') count++;
                 return count;                
+            }
+            public int currentCount
+            {
+               get { return count; }
             }
          
         }
