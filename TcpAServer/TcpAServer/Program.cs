@@ -5,6 +5,9 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TcpAServer
     
@@ -14,9 +17,6 @@ namespace TcpAServer
 		public static void Main()
 		{
             TcpServer server = new TcpServer(1234);
-			
-
-
 
 
         }
@@ -60,9 +60,11 @@ namespace TcpAServer
 
                 StreamWriter writer = new StreamWriter(client.GetStream(), Encoding.ASCII) { AutoFlush = true };
                 StreamReader reader = new StreamReader(client.GetStream(), Encoding.ASCII);
+                StreamReader newReader = new StreamReader(client.GetStream(), Encoding.ASCII);
 
                 bool ClientConnected = true;
                 string data = null;
+                string intData = null;
 
                 numberOfClients++;
                 Console.WriteLine("Current number of clients connected: {0}", numberOfClients);
@@ -70,9 +72,13 @@ namespace TcpAServer
 
                 while (ClientConnected)
                 {
+                    intData = newReader.ReadLine();
+                    int ii = Int32.Parse(intData);
+
                     data = reader.ReadLine();
 
                     Console.WriteLine("Message recieved from client: {0}", data);
+                    Console.WriteLine("THIS IS THE INTEGER {0}", ii);
                     writer.WriteLine("Number of A's so far: {0}", resource.AddToCount(data));
                     Console.WriteLine("Number of A's so far: {0}", resource.currentCount);
                 }
